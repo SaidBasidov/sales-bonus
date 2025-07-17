@@ -118,10 +118,3 @@ function analyzeSalesData(data, options) {
     top_products: seller.top_products,
   }));
 }
-
-
-const result = analyzeSalesData(data, {
-  calculateRevenue: calculateSimpleRevenue,
-  calculateBonus: calculateBonusByProfit
-});
-console.log(result);
