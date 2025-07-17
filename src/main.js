@@ -19,16 +19,20 @@ function calculateSimpleRevenue(purchase, _product) {
  * @returns {number}
  */
 function calculateBonusByProfit(index, total, seller) {
+  let bonus = 0;
+
   if (index === 0) {
-    return seller.profit * 0.15;
+    bonus = seller.profit * 0.15;
   } else if (index === 1 || index === 2) {
-    return seller.profit * 0.1;
+    bonus = seller.profit * 0.1;
   } else if (index === total - 1) {
-    return 0;
+    bonus = 0;
   } else {
     // Для всех остальных
-    return seller.profit * 0.05;
+    bonus = seller.profit * 0.05;
   }
+
+  return +bonus.toFixed(2);
 }
 
 /**
