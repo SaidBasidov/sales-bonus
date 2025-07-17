@@ -22,7 +22,7 @@ function calculateBonusByProfit(index, total, seller) {
   if (index === 0) {
     return +(seller.profit * 0.15).toFixed(2);
   } else if (index === 1 || index === 2) {
-    return +(seller.profit * 0.10).toFixed(2);
+    return +(seller.profit * 0.1).toFixed(2);
   } else if (index === total - 1) {
     return 0;
   } else {
@@ -82,14 +82,13 @@ function analyzeSalesData(data, options) {
 
     // Расчёт прибыли для каждого товара
     record.items.forEach((item) => {
-      const product = productIndex[item.sku]; // Товар
-      const cost = +(product.purchase_price).toFixed(2) * item.quantity; // Посчитать себестоимость (cost) товара как product.purchase_price, умноженную на количество товаров из чека
-      const revenue = calculateSimpleRevenue(item); // Посчитать выручку (revenue) с учётом скидки через функцию calculateRevenue
-      totalRevenue += revenue; // Посчитать прибыль: выручка минус себестоимость
-      seller.profit += +(revenue - cost).toFixed(2); // Увеличить общую накопленную прибыль (profit) у продавца
-      seller.profit = +(seller.profit).toFixed(2); // Увеличить общую накопленную прибыль (profit) у продавца
+      const product = productIndex[item.sku];
+      const cost = product.purchase_price * item.quantity;
+      const revenue = calculateSimpleRevenue(item);
+      const profit = revenue - cost;
+      seller.profit += profit;
+      totalRevenue += revenue;
 
-      
       // Учёт количества проданных товаров
       if (!seller.products_sold[item.sku]) {
         seller.products_sold[item.sku] = 0;
@@ -120,5 +119,3 @@ function analyzeSalesData(data, options) {
     top_products: seller.top_products,
   }));
 }
-
-
