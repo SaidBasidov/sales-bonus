@@ -27,7 +27,7 @@ function calculateBonusByProfit(index, total, seller) {
     return 0;
   } else {
     // Для всех остальных
-    return (seller.profit * 0.05).toFixed(2);
+    return +(seller.profit * 0.05).toFixed(2);
   }
 }
 
