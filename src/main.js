@@ -8,7 +8,7 @@ function calculateSimpleRevenue(purchase, _product) {
   // @TODO: Расчет прибыли от операции
   const { discount, sale_price, quantity } = purchase;
   const finalRevenue = sale_price * quantity * (1 - discount / 100);
-  return +finalRevenue.toFixed(2);
+  return finalRevenue;
 }
 
 /**
@@ -77,25 +77,33 @@ function analyzeSalesData(data, options) {
   // @TODO: Расчет выручки и прибыли для каждого продавца
   data.purchase_records.forEach((record) => {
     const seller = sellerIndex[record.seller_id];
-    seller.sales_count += 1;
-    let totalRevenue = 0; // Увеличить общую сумму всех продаж
+
+    sellerStats.map((item) => {
+      if (item.id === seller.id) {
+        item.sales_count++;
+        item.revenue += +record.total_amount;
+      }
+    });
 
     // Расчёт прибыли для каждого товара
     record.items.forEach((item) => {
       const product = productIndex[item.sku];
       const cost = product.purchase_price * item.quantity;
       const revenue = calculateSimpleRevenue(item);
-      const profit = revenue - cost;
-      seller.profit += profit;
-      totalRevenue += revenue;
 
       // Учёт количества проданных товаров
-      if (!seller.products_sold[item.sku]) {
-        seller.products_sold[item.sku] = 0;
-      }
-      seller.products_sold[item.sku] += item.quantity; // По артикулу товара увеличить его проданное количество у продавца
+      sellerStats.map((value) => {
+        if (value.id === seller.id) {
+          value.profit += revenue - cost;
+          // Учёт количества проданных товаров
+          if (!value.products_sold[item.sku]) {
+            value.products_sold[item.sku] = 0;
+          }
+          // По артикулу товара увеличить его проданное количество у продавца
+          value.products_sold[item.sku] += item.quantity;
+        }
+      }); // По артикулу товара увеличить его проданное количество у продавца
     });
-    seller.revenue += totalRevenue;
   });
   // @TODO: Сортировка продавцов по прибыли
   sellerStats.sort((a, b) => b.profit - a.profit);
